@@ -7,6 +7,9 @@ if (isset($_SESSION['hospital'])) {
     $result = $db->select()
         ->where('reg_id', '=', $_SESSION['hospital']['id'])
         ->get();
+        $db->setTable('reg');
+
+        $resultReg=$db->select()->where("id","=",$_SESSION['hospital']['id'])->get();
     // echo '<pre>';
     // print_r($result);
 } else {
@@ -38,7 +41,7 @@ if (isset($_SESSION['hospital'])) {
                 <div class="sub-menu">
                     <div class="hospital-info">
                         <img class="img-user" src="../img/hospital-ico.png">
-                        <h2><?= $_SESSION['hospital']['user_names']; ?></h2>
+                        <h2><?= $resultReg['user_names']; ?></h2>
                     </div>
                     <hr>
                     <a href="Hospitals.php" class="sub-menu-link">
@@ -61,7 +64,7 @@ if (isset($_SESSION['hospital'])) {
                         <p>Setting & Privacy</p>
                         <span>></span>
                     </a>
-                    <a href="../home/index.php" class="sub-menu-link">
+                    <a href="logout.php" class="sub-menu-link">
                         <img src="../img/logout.png">
                         <p>Logout</p>
                         <span>></span>
@@ -73,14 +76,20 @@ if (isset($_SESSION['hospital'])) {
     <div class="content" style="background-color: #b74b4b;">
         <div class="settings-container">
             <h2>Hospital Settings</h2>
-            <form action="#" method="POST">
+            <form action="updateH.php" method="POST">
                 <div class="form-section">
                     <!-- Section for Viewing Data -->
-                    <div class="view-data">
+                    <!-- <div class="view-data">
                         <h3>Hospital Name: <span id="hospital-name-view">Hospital A</span></h3>
                         <h3>Email: <span id="email-view">hospital@example.com</span></h3>
                         <h3>Phone: <span id="phone-view">123-456-7890</span></h3>
                         <h3>Address: <span id="address-view">123 Street, City, Country</span></h3>
+                    </div> -->
+                    <div class="view-data">
+                        <h3>Hospital Name: <span id="hospital-name-view"><?=$result['name'];?></span></h3>
+                        <h3>Email: <span id="email-view"><?= $resultReg['emails']; ?></span></h3>
+                        <h3>Phone: <span id="phone-view"><?=$result['phone_Num'];?></span></h3>
+                        <h3>Address: <span id="address-view"><?=$result['location'];?></span></h3>
                     </div>
 
                     <!-- Section for Editing Data -->
@@ -88,22 +97,22 @@ if (isset($_SESSION['hospital'])) {
                         <div class="form-group">
                             <label for="hospital-name">Hospital Name:</label>
                             <input type="text" id="hospital-name" name="hospital-name" placeholder="Enter hospital name"
-                                value="Hospital A">
+                                value="<?=$result['name'];?>">
                         </div>
                         <div class="form-group">
                             <label for="email">Email:</label>
                             <input type="email" id="email" name="email" placeholder="Enter email address"
-                                value="hospital@example.com" readonly>
+                                value="<?= $resultReg['emails']; ?>" >
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone:</label>
                             <input type="tel" id="phone" name="phone" placeholder="Enter phone number"
-                                value="123-456-7890">
+                                value="<?=$result['phone_Num'];?>">
                         </div>
                         <div class="form-group">
                             <label for="address">Address:</label>
                             <input type="text" id="address" name="address" placeholder="Enter address"
-                                value="123 Street, City, Country">
+                                value="<?=$result['location'];?>">
                         </div>
                         <div class="form-group">
                             <label for="password">Change Password:</label>
@@ -113,7 +122,7 @@ if (isset($_SESSION['hospital'])) {
                 </div>
 
                 <button type="button" class="btn-edit" onclick="toggleEdit()">Edit</button>
-                <button type="submit" class="btn-submit">Save Changes</button>
+                <button type="submit" class="btn-submit" name="submit">Save Changes</button>
             </form>
         </div>
     </div>

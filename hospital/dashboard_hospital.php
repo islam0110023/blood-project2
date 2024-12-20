@@ -7,6 +7,16 @@ if (isset($_SESSION['hospital'])) {
     $result = $db->select()
         ->where('reg_id', '=', $_SESSION['hospital']['id'])
         ->get();
+    $db->setTable('hospitals_blood_inventory hb');
+
+    $resultBlood = $db->select()->join("blood_types bt", "bt.id", "=", "hb.blood_type_id")->where("hospitals_id", "=", $result['hospitals_id'])->show();
+    // echo "<pre>";
+    // print_r($resultBlood);
+    $db->setTable('reg');
+
+    $resultReg=$db->select()->where("id","=",$_SESSION['hospital']['id'])->get();
+
+
 } else {
     echo "<script>alert('Login');</script>";
     header("location:../home/login_signup.php");
@@ -35,7 +45,7 @@ if (isset($_SESSION['hospital'])) {
                 <div class="sub-menu">
                     <div class="hospital-info">
                         <img class="img-user" src="../img/hospital-ico.png">
-                        <h2><?= $_SESSION['hospital']['user_names']; ?></h2>
+                        <h2><?= $resultReg['user_names']; ?></h2>
                     </div>
                     <hr>
                     <a href="Hospitals.php" class="sub-menu-link">
@@ -58,7 +68,7 @@ if (isset($_SESSION['hospital'])) {
                         <p>Setting & Privacy</p>
                         <span>></span>
                     </a>
-                    <a href="../home/index.php" class="sub-menu-link">
+                    <a href="logout.php" class="sub-menu-link">
                         <img src="../img/logout.png">
                         <p>Logout</p>
                         <span>></span>
@@ -81,11 +91,14 @@ if (isset($_SESSION['hospital'])) {
                         </tr>
                     </thead>
                     <tbody>
+                    <?php foreach ($resultBlood as $key => $value): ?>
                         <tr>
-                            <td>A+</td>
-                            <td>10 Units</td>
+                            <td><?=$value['Blood_Types'];?></td>
+                            <td><?=$value['Quantity']; echo " Units";?></td>
                         </tr>
-                        <tr>
+                        <?php endforeach; ?>
+
+                        <!-- <tr>
                             <td>B+</td>
                             <td>10 Units</td>
                         </tr>
@@ -112,7 +125,7 @@ if (isset($_SESSION['hospital'])) {
                         <tr>
                             <td>AB-</td>
                             <td>10 Units</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </div>
